@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta Secreta de Amor</title>
+    <style>
+        body {
+            background-color: #ffe0e6; /* Rosa super clarinho */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Fonte para dar um toque "pixel" */
+            overflow: hidden; /* Esconde corações que saem da tela */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Altura mínima para ocupar a tela toda */
+            position: relative;
+        }
+
+        /* --- Estilo dos Corações Pixelados --- */
+        .heart {
+            position: absolute;
+            background-color: #ff0000; /* Vermelho vibrante */
+            width: 10px; /* Tamanho do pixel */
+            height: 10px;
+            box-shadow: 
+                -10px -10px 0 #ff0000, /* Pixel superior esquerdo */
+                0 -10px 0 #ff0000,     /* Pixel superior */
+                10px -10px 0 #ff0000,  /* Pixel superior direito */
+                -20px 0 0 #ff0000,     /* Pixel esquerdo 2 */
+                -10px 0 0 #ff0000,     /* Pixel esquerdo 1 */
+                10px 0 0 #ff0000,      /* Pixel direito 1 */
+                20px 0 0 #ff0000,      /* Pixel direito 2 */
+                -10px 10px 0 #ff0000,  /* Pixel inferior esquerdo */
+                0 10px 0 #ff0000,      /* Pixel inferior */
+                10px 10px 0 #ff0000;   /* Pixel inferior direito */
+            
+            /* Para dar o formato de coração "pixelado" */
+            animation: floatHeart 15s infinite ease-in-out;
+            opacity: 0; /* Começa invisível */
+            transform: translateY(100vh); /* Começa de baixo */
+        }
+
+        /* Animação dos corações */
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        /* --- Estilo da Carta --- */
+        .card-container {
+            position: relative;
+            perspective: 1000px; /* Para efeito 3D */
+        }
+
+        .card {
+            width: 250px;
+            height: 150px;
+            background-color: #ffdce5; /* Rosa um pouco mais escuro que o fundo */
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.8s ease-in-out;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg); /* Estado inicial: fechada */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: #d84357; /* Cor do texto "Toque para abrir" */
+            font-weight: bold;
+            text-align: center;
+            backface-visibility: hidden; /* Esconde a parte de trás antes de virar */
+        }
+
+        .card.open {
+            transform: rotateY(180deg); /* Vira a carta */
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box; /* Inclui padding na largura/altura */
+        }
+
+        .card-front {
+            background-color: #ffdce5;
+            z-index: 2;
+        }
+        .card-front::after {
+            content: '✉️ Toque para abrir ✉️'; /* Emoji de carta para dar a ideia */
+            font-size: 1.2em;
+            color: #d84357;
+        }
+
+        .card-back {
+            background-color: #ffffff; /* Fundo branco para o conteúdo */
+            transform: rotateY(180deg); /* Inverte a parte de trás */
+            padding: 20px;
+            text-align: left;
+            flex-direction: column;
+            color: #333;
+            font-size: 0.9em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) inset; /* Sombra interna para dar profundidade */
+            border: 1px dashed #f0b4bf; /* Borda pontilhada decorativa */
+        }
+        .card-back p {
+            margin: 5px 0;
+        }
+        .card-back strong {
+            color: #ff69b4; /* Rosa choque */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <div class="card" id="myCard">
+            <div class="card-front"></div>
+            <div class="card-back">
+                <p>Meu amor,</p>
+                <p>Essa carta foi feita especialmente pra você, com todo carinho e um monte de corações pixelados! Espero que goste da surpresa.</p>
+                <p><strong>Com todo meu coração,<br> [Seu Nome]</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript para os Corações Flutuantes ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            document.body.appendChild(heart);
+
+            // Posição aleatória na largura
+            heart.style.left = Math.random() * 100 + 'vw';
+            // Duração da animação (varia para criar diferentes velocidades)
+            heart.style.animationDuration = Math.random() * 8 + 7 + 's'; // Entre 7s e 15s
+            // Tamanho aleatório
+            heart.style.transform = `scale(${Math.random() * 0.7 + 0.3})`; // Entre 0.3 e 1.0
+
+            // Remove o coração depois que ele sai da tela
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+            });
+        }
+
+        // Cria novos corações a cada meio segundo
+        setInterval(createHeart, 500);
+
+
+        // --- JavaScript para Abrir a Carta ---
+        document.getElementById('myCard').addEventListener('click', function() {
+            this.classList.toggle('open'); // Adiciona/remove a classe 'open'
+        });
+    </script>
+
+</body>
+</html>
